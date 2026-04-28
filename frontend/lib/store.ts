@@ -14,7 +14,7 @@ const CONFIG = {
     orderBookUpdateInterval: 1000, // ms
     latencyUpdateInterval: 2000, // ms
     marketStatsUpdateInterval: 5000, // ms
-    useMockData: true, // Use mock data by default (change to false when backend is running)
+    useMockData: false, // Now using real WebSocket data
     fallbackToMock: true, // Fall back to mock data if WebSocket fails
     maxReconnectAttempts: 5,
 };

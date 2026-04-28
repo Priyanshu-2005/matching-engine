@@ -1,2 +1,9 @@
 ﻿engine/build/
 .vs/
+frontend/.next/
+frontend/node_modules/
+node_modules/
+package-lock.json
+*.log
+.DS_Store
+Thumbs.db
