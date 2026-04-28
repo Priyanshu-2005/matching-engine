@@ -1,0 +1,33 @@
+[build]
+builder = "nixpacks"
+watchPatterns = ["**/*.cpp", "**/*.hpp", "**/*.ts", "**/*.tsx", "**/package.json", "**/CMakeLists.txt"]
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+# Define services for the matching engine project
+[[services]]
+name = "matching-engine"
+sourcePath = "."
+port = 8080
+env = { ENGINE_PORT = "8080", ENGINE_THREADS = "4" }
+healthcheck = { path = "/health", timeout = 10, interval = 30 }
+
+[[services]]
+name = "frontend"
+sourcePath = "./frontend"
+port = 3000
+env = { NEXT_PUBLIC_WS_URL = "ws://matching-engine-production.up.railway.app:8080/ws", NODE_ENV = "production" }
+dependsOn = ["matching-engine"]
+
+# Optional: WebSocket bridge for development
+[[services]]
+name = "websocket-bridge"
+sourcePath = "."
+port = 8081
+env = { PORT = "8080" }
+startCommand = "node websocket-bridge.js"
+dependsOn = ["matching-engine"]
