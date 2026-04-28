@@ -19,12 +19,15 @@ struct BinaryTradeEvent {
     uint64_t trade_id;
     uint64_t maker_order_id;
     uint64_t taker_order_id;
+    uint32_t timestamp;      // milliseconds since epoch
     uint32_t price;          // in cents (15025 = $150.25)
     uint32_t quantity;       // shares
+    uint8_t side;            // 0 = Buy, 1 = Sell (matches Side enum)
+    uint8_t reserved[3];     // padding to align to 8 bytes
     
     // Validation - must match exactly the size of data::TradeEvent
-    static_assert(sizeof(BinaryTradeEvent) == 32, 
-                  "BinaryTradeEvent must be exactly 32 bytes for cache alignment");
+    static_assert(sizeof(BinaryTradeEvent) == 40,
+                  "BinaryTradeEvent must be exactly 40 bytes for cache alignment");
 };
 #pragma pack(pop)
 
@@ -35,7 +38,7 @@ struct BinaryTradeEvent {
 // Convert TradeEvent to BinaryTradeEvent (memory copy with validation)
 inline void trade_event_to_binary(const data::TradeEvent& src, BinaryTradeEvent& dst) {
     // Direct memory copy since structures have identical layout
-    // This is safe because both are 32 bytes with same field order
+    // This is safe because both are 40 bytes with same field order
     static_assert(sizeof(data::TradeEvent) == sizeof(BinaryTradeEvent),
                   "TradeEvent and BinaryTradeEvent must have same size");
     
