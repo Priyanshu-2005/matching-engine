@@ -126,8 +126,11 @@ int main() {
             }
         });
 
-        std::cout << ">>> Engine is running and broadcasting. Press ENTER to stop. <<<" << std::endl;
-        std::cin.get();
+        std::cout << ">>> Engine is running and broadcasting in background... <<<" << std::endl;
+        // Keep the main thread alive indefinitely for Docker deployments
+        while (running) {
+            std::this_thread::sleep_for(std::chrono::seconds(60));
+        }
         
         running = false;
         engine_thread.join();
