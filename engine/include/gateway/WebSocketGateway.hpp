@@ -69,9 +69,9 @@ private:
                   uWS::OpCode opCode);
 #else
   // Dummy implementations when uWebSockets is disabled
-  void on_connection(void *ws) {}
-  void on_disconnection(void *ws, int code, std::string_view message) {}
-  void on_message(void *ws, std::string_view message, int opCode) {}
+  void on_connection(void *ws);
+  void on_disconnection(void *ws, int code, std::string_view message);
+  void on_message(void *ws, std::string_view message, int opCode);
 #endif
 
   // Background thread functions

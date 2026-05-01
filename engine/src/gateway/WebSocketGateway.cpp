@@ -205,17 +205,17 @@ void WebSocketGateway::server_thread_func() {
   }
 }
 
-void WebSocketGateway::on_connection(void *ws) {
+void WebSocketGateway::on_connection(void* /*ws*/) {
   // No-op
 }
 
-void WebSocketGateway::on_disconnection(void *ws, int code,
-                                        std::string_view message) {
+void WebSocketGateway::on_disconnection(void* /*ws*/, int /*code*/,
+                                        std::string_view /*message*/) {
   // No-op
 }
 
-void WebSocketGateway::on_message(void *ws, std::string_view message,
-                                  int opCode) {
+void WebSocketGateway::on_message(void* /*ws*/, std::string_view /*message*/,
+                                  int /*opCode*/) {
   // No-op
 }
 #endif
@@ -290,7 +290,6 @@ void WebSocketGateway::update_stats(uint64_t messages_sent,
 
   if (elapsed >= 1000) { // Update every second
     uint64_t current_messages = messages_sent_.load(std::memory_order_relaxed);
-    uint64_t messages_since_last = current_messages - last_message_count;
 
     // Store for next calculation
     last_update = now;
