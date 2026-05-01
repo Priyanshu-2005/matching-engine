@@ -39,13 +39,15 @@ int main() {
     using namespace matching_engine::gateway;
 
     try {
-        std::cout << "[INIT] Bootstrapping Engine Memory (700MB)..." << std::endl;
-        EngineMemory memory(734003200); 
+        // Using a smaller memory pool (100MB) to fit comfortably within free-tier 512MB limits
+        std::cout << "[INIT] Bootstrapping Engine Memory (100MB)..." << std::endl;
+        EngineMemory memory(104857600); 
         std::pmr::polymorphic_allocator<std::byte> alloc = memory.get_allocator();
 
         const uint32_t MIN_PRICE = 10000;
         const uint32_t MAX_PRICE = 30000;
-        const size_t MAX_ORDERS = 10000000; 
+        // Reduced to 1 million orders for smaller footprint
+        const size_t MAX_ORDERS = 1000000; 
 
         LimitOrderBook lob(MIN_PRICE, MAX_PRICE, alloc);
         CancelLookup cancel_lookup(MAX_ORDERS, alloc);
