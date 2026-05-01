@@ -29,7 +29,7 @@ struct GatewayConfig {
     
     // Validation
     bool validate() const {
-        return port > 0 && port < 65536 &&
+        return port > 0 &&
                broadcast_fps > 0 && broadcast_fps <= 1000 &&
                max_connections > 0 && max_connections <= 10000 &&
                queue_batch_size > 0 && queue_batch_size <= 1024 &&

@@ -24,12 +24,12 @@ struct BinaryTradeEvent {
     uint32_t quantity;       // shares
     uint8_t side;            // 0 = Buy, 1 = Sell (matches Side enum)
     uint8_t reserved[3];     // padding to align to 8 bytes
-    
-    // Validation - must match exactly the size of data::TradeEvent
-    static_assert(sizeof(BinaryTradeEvent) == 40,
-                  "BinaryTradeEvent must be exactly 40 bytes for cache alignment");
 };
 #pragma pack(pop)
+
+// Validation - must match exactly the size of data::TradeEvent
+static_assert(sizeof(BinaryTradeEvent) == 40,
+              "BinaryTradeEvent must be exactly 40 bytes for cache alignment");
 
 // ========================================================================
 // Serialization Utilities
@@ -80,7 +80,7 @@ constexpr bool is_little_endian() {
 // Convert to network byte order (big-endian) if needed
 // For now, we assume little-endian systems and clients
 // In production, you'd want to standardize on network byte order
-inline void to_network_byte_order(BinaryTradeEvent& event) {
+inline void to_network_byte_order(BinaryTradeEvent& /*event*/) {
     if (!is_little_endian()) {
         // If system is big-endian, convert to little-endian for transmission
         // This is a placeholder - actual implementation would swap bytes
@@ -89,7 +89,7 @@ inline void to_network_byte_order(BinaryTradeEvent& event) {
 }
 
 // Convert from network byte order to host byte order
-inline void from_network_byte_order(BinaryTradeEvent& event) {
+inline void from_network_byte_order(BinaryTradeEvent& /*event*/) {
     if (!is_little_endian()) {
         // If system is big-endian, convert from little-endian
         // This is a placeholder

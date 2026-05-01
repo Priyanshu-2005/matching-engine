@@ -75,7 +75,7 @@ public:
 
         // Drain the Lock-Free SPMC Egress Queue
         // This does NOT block the Engine thread that pushes to it!
-        while (egress_queue_.read(last_sequence_, event)) {
+        while (egress_queue_.pop(last_sequence_, event)) {
           crow::json::wvalue e;
           e["maker_id"] = event.maker_order_id;
           e["taker_id"] = event.taker_order_id;
