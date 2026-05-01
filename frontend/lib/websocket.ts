@@ -208,7 +208,7 @@ export class MatchingEngineWebSocket {
                                     trade_id: e.trade_id || Date.now(),
                                     maker_order_id: e.maker_id || 0,
                                     taker_order_id: e.taker_id || 0,
-                                    price: (e.price || 0) / 100, // C++ stores price in cents
+                                    price: e.price || 0, // raw cents — TradeTape divides by 100 for display
                                     quantity: e.quantity || 0,
                                     timestamp: e.timestamp || Date.now(),
                                     side: e.side || 'buy',
