@@ -28,7 +28,7 @@ RUN mkdir -p build && cd build && \
     -DUWS_ENABLE=OFF \
     -DCMAKE_CXX_FLAGS="-O3 -march=native -flto -Wall -Wextra -pthread" \
     -DCMAKE_EXE_LINKER_FLAGS="-flto" && \
-    cmake --build . --config Release --target engine -- -j$(nproc)
+    cmake --build . --config Release --target engine -- -j1
 
 # Stage 2: Runtime
 FROM ubuntu:22.04 AS runtime
