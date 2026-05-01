@@ -5,13 +5,13 @@
 #include <sstream>
 #include <string_view>
 
+namespace matching_engine {
+namespace gateway {
+
 #if !UWS_ENABLE
 // Define DummyApp when uWebSockets is disabled
 struct DummyApp {};
 #endif
-
-namespace matching_engine {
-namespace gateway {
 
 using namespace std::chrono;
 
