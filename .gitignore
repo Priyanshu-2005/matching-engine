@@ -1,5 +1,6 @@
-﻿engine/build/
+engine/build/
 engine/build_test/
+build/
 .vs/
 frontend/.next/
 frontend/node_modules/
