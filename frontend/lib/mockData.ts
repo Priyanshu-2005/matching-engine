@@ -86,6 +86,42 @@ export function generateMockOrderBook(): OrderBook {
     };
 }
 
+// Generate order book anchored to a specific mid-price (price in cents)
+// Used when live trade data is available to keep the depth chart populated
+export function generateOrderBookFromPrice(midPrice: number): OrderBook {
+    const spread = MOCK_CONFIG.spread;
+    const bestBid = midPrice - spread / 2;
+    const bestAsk = midPrice + spread / 2;
+
+    const bids: OrderBookLevel[] = [];
+    const asks: OrderBookLevel[] = [];
+
+    let bidCumulative = 0;
+    let askCumulative = 0;
+
+    for (let i = 0; i < MOCK_CONFIG.levels; i++) {
+        const price = bestBid - i * 5;
+        const quantity = randomInt(100, 5000);
+        bidCumulative += quantity;
+        bids.push({ price, quantity, total: bidCumulative, side: 'buy' });
+    }
+
+    for (let i = 0; i < MOCK_CONFIG.levels; i++) {
+        const price = bestAsk + i * 5;
+        const quantity = randomInt(100, 5000);
+        askCumulative += quantity;
+        asks.push({ price, quantity, total: askCumulative, side: 'sell' });
+    }
+
+    return {
+        bids: bids.reverse(),
+        asks,
+        spread,
+        bestBid,
+        bestAsk,
+    };
+}
+
 // Generate mock latency metrics
 export function generateMockLatencyMetrics(): LatencyMetrics {
     const baseLatency = randomFloat(50, 200); // 50-200 nanoseconds

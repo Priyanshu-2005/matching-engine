@@ -4,7 +4,8 @@ import {
     generateMockTradeEvent,
     generateMockOrderBook,
     generateMockLatencyMetrics,
-    generateMockMarketStats
+    generateMockMarketStats,
+    generateOrderBookFromPrice,
 } from './mockData';
 import { wsClient } from './websocket';
 
@@ -64,6 +65,7 @@ export function useMatchingEngineStore() {
     const latencyIntervalRef = useRef<NodeJS.Timeout | null>(null);
     const marketStatsIntervalRef = useRef<NodeJS.Timeout | null>(null);
     const mockTradeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+    const lastTradePriceRef = useRef<number>(15250); // default mid-price in cents
 
     // Add a new trade to the list (maintain max size)
     const addTrade = useCallback((trade: TradeEvent) => {
@@ -81,6 +83,9 @@ export function useMatchingEngineStore() {
         if (!useMockData) {
             wsClient.onTrade = (trade) => {
                 addTrade(trade);
+                // Update order book with a synthetic book anchored to the live trade price
+                lastTradePriceRef.current = trade.price;
+                setOrderBook(generateOrderBookFromPrice(trade.price));
             };
 
             wsClient.onOrderBook = (orderBook) => {
@@ -93,6 +98,8 @@ export function useMatchingEngineStore() {
 
             wsClient.onOpen = () => {
                 setIsConnected(true);
+                // Seed the chart immediately with a synthetic book
+                setOrderBook(generateOrderBookFromPrice(lastTradePriceRef.current));
                 console.log('Connected to matching engine WebSocket');
             };
 
@@ -102,11 +109,22 @@ export function useMatchingEngineStore() {
             };
 
             wsClient.connect();
+
+            // Run latency and market stats on intervals even in live mode
+            latencyIntervalRef.current = setInterval(() => {
+                setLatency(generateMockLatencyMetrics());
+            }, CONFIG.latencyUpdateInterval);
+
+            marketStatsIntervalRef.current = setInterval(() => {
+                setMarketStats(generateMockMarketStats());
+            }, CONFIG.marketStatsUpdateInterval);
         }
 
         // Always clean up WebSocket when component unmounts or useMockData changes
         return () => {
             wsClient.disconnect();
+            if (latencyIntervalRef.current) clearInterval(latencyIntervalRef.current);
+            if (marketStatsIntervalRef.current) clearInterval(marketStatsIntervalRef.current);
         };
     }, [useMockData, addTrade]);
 
